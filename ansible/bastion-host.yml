@@ -3,3 +3,7 @@
   become: true
   roles:
     - base-os
+
+  tasks:
+    - name: Install Netcat for SSH Proxy Command
+      apt: name=netcat state=present
