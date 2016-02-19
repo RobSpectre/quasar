@@ -1,0 +1,5 @@
+---
+- hosts: qm1
+  become: true
+  roles:
+    - base-os
