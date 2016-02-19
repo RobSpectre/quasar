@@ -20,7 +20,6 @@
     - bind9utils
     - sysstat
 
-
 - name: System | Check Current Timezone
   shell: cat /etc/timezone
   register: timestat
