@@ -1,0 +1,12 @@
+---
+sysadmins:
+  - sheydari
+  - mrich
+  - mholford
+
+users:
+  - dfurnes
+  # Need to get public key from Jeff Bladt
+  # - jbladt
+
+timezone: UTC
