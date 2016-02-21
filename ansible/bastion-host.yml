@@ -3,6 +3,7 @@
   become: true
   roles:
     - base-os
+    - jenkins
 
   tasks:
     - name: Install Netcat for SSH Proxy Command
