@@ -4,3 +4,7 @@
   roles:
     - base-os
     - jenkins
+
+  tasks:
+    - name: Install Netcat for SSH Proxy Command
+      apt: name=netcat state=present
