@@ -1,0 +1,8 @@
+- name: Add Oracle MySQL Apt Key
+  apt_key: data="{{ lookup('file', 'mysql-57.key') }}" state=present
+
+- name: Add Oracle Apt Repos
+  apt_repository: repo='deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7' state=present update_cache=yes
+
+- name: Install MySQL 5.7
+  apt: name=mysql-server-5.7 state=present

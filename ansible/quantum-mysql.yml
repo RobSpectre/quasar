@@ -1,0 +1,6 @@
+---
+- hosts: quantum-mysql
+  become: true
+  roles:
+    - base-os
+    - mysql-57
