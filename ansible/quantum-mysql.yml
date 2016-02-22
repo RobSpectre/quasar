@@ -1,0 +1,9 @@
+---
+- hosts: quantum-mysql
+  become: true
+  vars:
+    mysql_server: 1
+    server_id: 100
+  roles:
+    - base-os
+    - mysql-57

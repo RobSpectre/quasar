@@ -1,0 +1,34 @@
+- name: Add Oracle MySQL Apt Key
+  apt_key: data="{{ lookup('file', 'mysql-57.key') }}" state=present
+
+- name: Add Oracle Apt Repos
+  apt_repository: repo='deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7' state=present update_cache=yes
+
+- name: Install MySQL 5.7 Server
+  apt: name=mysql-server-5.7 state=present
+  with_items:
+    - mysql-server-5.7
+    - python-mysqldb
+  when: mysql_server is defined and mysql_server == 1
+
+- name: Add MySQL Extra Config
+  template: src=data-mysql.cnf.j2 dest=/etc/mysql/conf.d/data-mysql.cnf owner=root group=root mode=644
+  notify: restart mysql
+  when: mysql_server is defined and mysql_server == 1
+
+- name: Modify Nofile Soft Limit for More Resources
+  pam_limits: domain=* limit_type=soft limit_item=nofile value=100000
+  notify: restart mysql
+  when: mysql_server is defined and mysql_server == 1
+
+- name: Modify Nofile Hard Limit for More Resources
+  pam_limits: domain=* limit_type=hard limit_item=nofile value=125000
+  notify: restart mysql
+  when: mysql_server is defined and mysql_server == 1
+
+- name: Install MySQL 5.7 Client
+  apt: name={{ item }} state=present
+  with_items:
+    - mysql-client-5.7
+    - libmysqlclient-dev
+  when: mysql_client is defined and mysql_client == 1
