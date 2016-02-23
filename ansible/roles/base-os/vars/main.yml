@@ -6,7 +6,7 @@ sysadmins:
 
 users:
   - dfurnes
-  # Need to get public key from Jeff Bladt
-  # - jbladt
+  - jbladt
+  - nmody
 
 timezone: UTC
