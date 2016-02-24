@@ -7,3 +7,4 @@
   roles:
     - base-os
     - mysql-57
+    - mysql-57-users
