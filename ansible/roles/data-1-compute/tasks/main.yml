@@ -26,3 +26,17 @@
     - requests
     - SQLAlchemy
     - lxml
+
+## The following has a dependency on the `base-os` role "appuser"
+#  being defined.
+
+# Create QA User owned script run-path
+
+- name: Create etl-scripts Run Directory
+  file: path=/etl-scripts state=directory owner=quantum group=quantum mode=750
+  when: appuser is defined and appuser == "QA"
+
+ 
+- name: Create etl-scripts Run Directory
+  file: path=/etl-scripts state=directory owner=quasar group=quasar mode=750
+  when: appuser is defined and appuser == "PROD"
