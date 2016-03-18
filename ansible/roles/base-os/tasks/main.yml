@@ -90,7 +90,19 @@
   with_items: "{{qa_users}}"
   when: appuser is defined and appuser == "QA"
 
+## Prod Data Application User
+
 - name: User Setup | Add Prod App User
   user: name ={{ item }} shell=/bin/bash
   with_items: "{{prod_users}}"
+  when: appuser is defined and appuser == "PROD"
+
+## Create Env Directory Used by App User
+
+- name: Create QA Env Dir
+  file: path=/env state=directory owner=quantum group=quantum mode=750 recurse=yes
+  when: appuser is defined and appuser == "QA"
+
+- name: Create Prod Env Dir
+  file: path=/env state=directory owner=quasar group=quasar mode=750 recurse=yes
   when: appuser is defined and appuser == "PROD"
