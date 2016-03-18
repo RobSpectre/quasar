@@ -10,9 +10,9 @@ users:
   - nmody
 
 qa_users:
-  - quasar
+  - quantum
 
 prod_users:
-  - quantum
+  - quasar
 
 timezone: UTC
