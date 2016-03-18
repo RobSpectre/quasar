@@ -26,7 +26,6 @@
   changed_when: timestat.stdout != "{{ timezone }}"
 
 - name: System | Set Timezone to UTC
-  # debug: var=timestat
   command: timedatectl set-timezone "{{ timezone }}"
   when: timestat.stdout != "{{ timezone }}"
   notify: restart ntp
@@ -47,30 +46,51 @@
 
 - name: User Setup | Add SysAdmin Users
   user: name={{ item }} groups=sudo shell=/bin/bash
-  with_items: "sysadmins"
+  with_items: "{{sysadmins}}"
 
 - name: User Setup | Create SysAdmin User SSH Directory
   file: dest=/home/{{ item }}/.ssh owner={{ item }} group={{ item }} mode=750 state=directory
-  with_items: "sysadmins"
+  with_items: "{{sysadmins}}"
 
 - name: User Setup | Setup SysAdmin User Public Keys
   authorized_key:
      user={{ item }}
      key="{{ lookup('file', item + '-id_rsa.pub') }}"
-  with_items: "sysadmins"
+  with_items: "{{sysadmins}}"
 
 ## Limited Users
 
 - name: User Setup | Add Limited Users
   user: name={{ item }} shell=/bin/bash
-  with_items: "users"
+  with_items: "{{users}}"
 
 - name: User Setup | Create Limited User SSH Directory
   file: dest=/home/{{ item }}/.ssh owner={{ item }} group={{ item }} mode=750 state=directory
-  with_items: "users"
+  with_items: "{{users}}"
 
 - name: User Setup | Setup Limited User Public Keys
   authorized_key: >
      user={{ item }}
      key="{{ lookup('file', item + '-id_rsa.pub') }}"
-  with_items: "users"
+  with_items: "{{users}}"
+
+## App Users
+# This section creates App users when specified
+# with variable setting of "appuser" to QA or Prod.
+# There will likely be other users added in the future.
+# IMPORTANT FEATURE: None of these users will have login
+# privileges. You either have to sudo to them as a "sysadmin"
+# or not at all.
+##
+ 
+## QA Data Application User
+
+- name: User Setup | Add QA App User
+  user: name={{ item }} shell=/bin/bash
+  with_items: "{{qa_users}}"
+  when: appuser is defined and appuser == "QA"
+
+- name: User Setup | Add Prod App User
+  user: name ={{ item }} shell=/bin/bash
+  with_items: "{{prod_users}}"
+  when: appuser is defined and appuser == "PROD"

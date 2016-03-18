@@ -1,0 +1,28 @@
+- name: Install Data 1.0 Apt Packages
+  apt: name={{ item }} state=present
+  with_items:
+    - python-pip
+    - python-virtualenv
+    - python-dev
+    - build-essential
+    - libmysqlclient-dev
+    - libxml2-dev
+    - libxslt1-dev
+    - zlib1g-dev
+    - libncurses5-dev
+
+- name: Install Data 1.0 Pip Packages
+  pip: name={{ item }} state=present
+  with_items:
+    - beautifulsoup4
+    - Flask
+    - Flask-Cache
+    - Flask-Login
+    - Flask-SQLAlchemy
+    - python-gflags
+    - google-api-python-client
+    - MySQL-python
+    - readline
+    - requests
+    - SQLAlchemy
+    - lxml
