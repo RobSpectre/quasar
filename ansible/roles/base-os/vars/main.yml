@@ -9,4 +9,10 @@ users:
   - jbladt
   - nmody
 
+qa_users:
+  - quasar
+
+prod_users:
+  - quantum
+
 timezone: UTC
