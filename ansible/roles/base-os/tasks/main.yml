@@ -47,30 +47,30 @@
 
 - name: User Setup | Add SysAdmin Users
   user: name={{ item }} groups=sudo shell=/bin/bash
-  with_items: "sysadmins"
+  with_items: "{{sysadmins}}"
 
 - name: User Setup | Create SysAdmin User SSH Directory
   file: dest=/home/{{ item }}/.ssh owner={{ item }} group={{ item }} mode=750 state=directory
-  with_items: "sysadmins"
+  with_items: "{{sysadmins}}"
 
 - name: User Setup | Setup SysAdmin User Public Keys
   authorized_key:
      user={{ item }}
      key="{{ lookup('file', item + '-id_rsa.pub') }}"
-  with_items: "sysadmins"
+  with_items: "{{sysadmins}}"
 
 ## Limited Users
 
 - name: User Setup | Add Limited Users
   user: name={{ item }} shell=/bin/bash
-  with_items: "users"
+  with_items: "{{users}}"
 
 - name: User Setup | Create Limited User SSH Directory
   file: dest=/home/{{ item }}/.ssh owner={{ item }} group={{ item }} mode=750 state=directory
-  with_items: "users"
+  with_items: "{{users}}"
 
 - name: User Setup | Setup Limited User Public Keys
   authorized_key: >
      user={{ item }}
      key="{{ lookup('file', item + '-id_rsa.pub') }}"
-  with_items: "users"
+  with_items: "{{users}}"
