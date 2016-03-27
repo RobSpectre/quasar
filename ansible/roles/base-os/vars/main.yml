@@ -8,6 +8,7 @@ users:
   - dfurnes
   - jbladt
   - nmody
+  - nmccormick
 
 qa_users:
   - quantum
