@@ -1,13 +1,13 @@
-- name: Add Oracle MySQL Apt Key
-  apt_key: data="{{ lookup('file', 'mysql-57.key') }}" state=present
+- name: Copy Percona Trusty Deb Repo File Into Place
+  copy: src=percona-release_0.1-3.trusty_all.deb dest=/tmp/percona-release_0.1-3.trusty_all.deb owner=root group=root mode=755
 
-- name: Add Oracle Apt Repos
-  apt_repository: repo='deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7' state=present update_cache=yes
+- name: Install Percona Repo
+  command: dpkg -i /tmp/percona-release_0.1-3.trusty_all.deb
 
-- name: Install MySQL 5.7 Server
-  apt: name=mysql-server-5.7 state=present
+- name: Install Percona 5.7 Server
+  apt: name={{ item }} state=present update_cache=yes
   with_items:
-    - mysql-server-5.7
+    - percona-server-server-5.7
     - python-mysqldb
   when: mysql_server is defined and mysql_server == 1
 
@@ -26,10 +26,10 @@
   notify: restart mysql
   when: mysql_server is defined and mysql_server == 1
 
-- name: Install MySQL 5.7 Client
+- name: Install Percona 5.7 Client
   apt: name={{ item }} state=present
   with_items:
-    - mysql-client-5.7
+    - percona-server-client-5.7
     - libmysqlclient-dev
   when: mysql_client is defined and mysql_client == 1
 

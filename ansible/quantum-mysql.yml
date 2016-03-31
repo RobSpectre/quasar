@@ -4,6 +4,7 @@
   vars:
     mysql_server: 1
     server_id: 100
+    env: quantum
   roles:
     - base-os
     - mysql-57
