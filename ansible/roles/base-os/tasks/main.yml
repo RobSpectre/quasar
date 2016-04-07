@@ -10,7 +10,7 @@
 
 - name: System | Install Common Tools
   become: yes
-  apt: name={{ item }} state=latest
+  apt: name={{ item }} state=latest update_cache=yes
   with_items:
     - ntp
     - git

@@ -1,0 +1,11 @@
+---
+- hosts: hubble-mysql
+  become: true
+  vars:
+    mysql_server: 1
+    server_id: 100
+    env: hubble
+  roles:
+    - base-os
+    - percona-57
+    - mysql-57-users
