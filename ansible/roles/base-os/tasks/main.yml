@@ -10,7 +10,7 @@
 
 - name: System | Install Common Tools
   become: yes
-  apt: name={{ item }} state=latest
+  apt: name={{ item }} state=latest update_cache=yes
   with_items:
     - ntp
     - git
@@ -63,16 +63,19 @@
 - name: User Setup | Add Limited Users
   user: name={{ item }} shell=/bin/bash
   with_items: "{{users}}"
+  when: (open_access) is defined and open_access == "true"
 
 - name: User Setup | Create Limited User SSH Directory
   file: dest=/home/{{ item }}/.ssh owner={{ item }} group={{ item }} mode=750 state=directory
   with_items: "{{users}}"
+  when: (open_access) is defined and open_access == "true"
 
 - name: User Setup | Setup Limited User Public Keys
   authorized_key: >
      user={{ item }}
      key="{{ lookup('file', item + '-id_rsa.pub') }}"
   with_items: "{{users}}"
+  when: (open_access) is defined and open_access == "true"
 
 ## App Users
 # This section creates App users when specified
@@ -82,7 +85,7 @@
 # privileges. You either have to sudo to them as a "sysadmin"
 # or not at all.
 ##
- 
+
 ## QA Data Application User
 
 - name: User Setup | Add QA App User
