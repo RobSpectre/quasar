@@ -1,0 +1,11 @@
+---
+- hosts: hubble-compute
+  become: true
+  vars:
+    mysql_client: 1
+    appuser: PROD
+  roles:
+    - base-os
+    - percona-57
+    - data-1-compute
+    - jenkins
