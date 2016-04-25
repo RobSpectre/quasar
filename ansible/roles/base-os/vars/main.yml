@@ -10,6 +10,14 @@ users:
   - nmody
   - nmccormick
 
+temp_users:
+  - hrobbins
+  - charbur
+  - hghidey
+  - jjensen
+  - lpatton
+  - mfantini
+
 qa_users:
   - quantum
 

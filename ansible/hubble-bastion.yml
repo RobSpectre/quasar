@@ -5,7 +5,9 @@
     - base-os
     - nginx-secure
   vars:
+    # Includes Limited Access and Temporary Users for SSH Proxy purposes
     open_access: true
+    temp_access: true
   tasks:
     - name: Install Netcat for SSH Proxy Command
       apt: name=netcat state=present
