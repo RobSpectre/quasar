@@ -115,7 +115,7 @@
 ## Prod Data Application User
 
 - name: User Setup | Add Prod App User
-  user: name ={{ item }} shell=/bin/bash
+  user: name={{ item }} shell=/bin/bash
   with_items: "{{prod_users}}"
   when: appuser is defined and appuser == "PROD"
 
