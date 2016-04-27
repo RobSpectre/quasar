@@ -58,6 +58,11 @@
      key="{{ lookup('file', item + '-id_rsa.pub') }}"
   with_items: "{{sysadmins}}"
 
+- name: Setup Sudoers for Sysadmin Users
+  template: src=sysadmin_user.j2 dest=/etc/sudoers.d/{{ item }}_sysadmin
+  with_items:
+    - "{{sysadmins}}"
+
 ## Limited Users
 
 - name: User Setup | Add Limited Users
