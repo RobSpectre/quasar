@@ -4,7 +4,7 @@
   roles:
     - base-os
     - nginx-secure
-    - mysql-57
+    - percona-57
   vars:
     mysql_client: 1
     # Includes Limited Access and Temporary Users for SSH Proxy purposes
