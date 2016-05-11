@@ -8,6 +8,27 @@
     value=1
     sysctl_set=yes
 
+- name: System | Set TCP IPv4 Keep Alive
+  become: yes
+  sysctl: >
+    name=net.ipv4.tcp_keepalive_time
+    value=60
+    sysctl_set=yes  
+
+- name: System | Set TCP IPv4 Keep Alive Interval
+  become: yes
+  sysctl: >
+    name=net.ipv4.tcp_keepalive_intvl
+    value=60
+    sysctl_set=yes
+
+- name: System | Set TCP IPv4 Keep Alive Probes
+  become: yes
+  sysctl: >
+    name=net.ipv4.tcp_keepalive_probes
+    value=5
+    sysctl_set=yes
+
 - name: System | Install Common Tools
   become: yes
   apt: name={{ item }} state=latest update_cache=yes

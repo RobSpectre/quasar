@@ -3,7 +3,7 @@
   become: true
   vars:
     mysql_server: 1
-    server_id: 100
+    server_id: 150
     env: hubble
   roles:
     - base-os

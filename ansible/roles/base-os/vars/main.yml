@@ -17,6 +17,7 @@ temp_users:
   - jjensen
   - lpatton
   - mfantini
+  - ldivine
 
 qa_users:
   - quantum
