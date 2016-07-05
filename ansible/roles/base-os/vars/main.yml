@@ -19,6 +19,7 @@ temp_users:
   - mfantini
   - ldivine
   - ssiu
+  - jlee
 
 qa_users:
   - quantum
