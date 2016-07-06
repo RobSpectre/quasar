@@ -16,7 +16,7 @@ log_bin_index	= /var/lib/mysql/{{ ansible_hostname }}-bin.index
 relay-log	= /var/lib/mysql/{{ ansible_hostname }}-relay-bin
 expire_logs_days = 3
 log-slave-updates = 1
-read-only	= 1
+read-only	= 0
 sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 # Tuning Section
