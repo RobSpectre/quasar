@@ -62,25 +62,28 @@ db = psycopg2.connect(
 
 cur = db.cursor()
 
+# Create staging table for changes
+cur.execute("DROP TABLE IF EXISTS users_and_activities.mailchimp_sub_staging")
+db.commit()
+cur.execute("CREATE TABLE users_and_activities.mailchimp_sub_staging AS SELECT * FROM users_and_activities.mailchimp_sub")
+db.commit()
+
 # Iterate over entire member array and add to DB
 for member in total_members:
     for submember in member:
         email = submember['email_address']
         confirm_time = submember['last_changed'].replace('T',' ').split('+')[0]
-        cur.execute("INSERT into users_and_activities.mailchimp_sub values (%s,%s)", (email,confirm_time))
+        cur.execute("INSERT into users_and_activities.mailchimp_sub_staging values (%s,%s)", (email,confirm_time))
 
 db.commit()
 
 # Clean-Up and Remove Duplicates - Placeholder workaround since RedShift doesn't strictly enforce Primary Keys
-cur.execute("DROP TABLE IF EXISTS users_and_activities.mailchimp_sub_dedupe")
+
+cur.execute("DELETE FROM users_and_activities.mailchimp_sub USING users_and_activities.mailchimp_sub_staging WHERE users_and_activities.mailchimp_sub.email_address = users_and_activities.mailchimp_sub_staging.email_address")
 db.commit()
-cur.execute("CREATE TABLE users_and_activities.mailchimp_sub_dedupe AS SELECT * FROM users_and_activities.mailchimp_sub")
+cur.execute("INSERT INTO users_and_activities.mailchimp_sub SELECT * FROM users_and_activities.mailchimp_sub_staging")
 db.commit()
-cur.execute("TRUNCATE TABLE users_and_activities.mailchimp_sub")
-db.commit()
-cur.execute("INSERT INTO users_and_activities.mailchimp_sub SELECT DISTINCT * FROM users_and_activities.mailchimp_sub_dedupe")
-db.commit()
-cur.execute("DROP TABLE users_and_activities.mailchimp_sub_dedupe")
+cur.execute("DROP TABLE users_and_activities.mailchimp_sub_staging")
 db.commit()
 
 # Close Connection in case of loop failure
