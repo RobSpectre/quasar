@@ -34,7 +34,7 @@ pw = config.mailchimp_api_pass
 
 # MailChimp API v3.0 Paremeters to Get Unsubscribed Users over 2 hour time window assuming max 10000 subscribers per time windows. Number guidelines
 # set via conversations with Dee on max ingestion rate
-info = {'status':'subscribed', 'since_timestamp_opt':datetime.datetime.utcfromtimestamp(start_window_time).isoformat() , 'before_timestamp_opt':datetime.datetime.utcfromtimestamp(end_window_time).isoformat() , 'count':10000, 'fields':'members.email_address,members.last_changed'}
+info = {'status':'unsubscribed', 'since_timestamp_opt':datetime.datetime.utcfromtimestamp(start_window_time).isoformat() , 'before_timestamp_opt':datetime.datetime.utcfromtimestamp(end_window_time).isoformat() , 'count':10000, 'fields':'members.email_address,members.timestamp_opt,members.last_changed'}
 
 # Initialize Empty List for Total Members
 total_members = []
@@ -44,14 +44,15 @@ while (start_window_time - origin_time) >= -7200:
     r = requests.get('https://us4.api.mailchimp.com/3.0/lists/f2fab1dfd4/members',auth=HTTPBasicAuth(un, pw), params=info)
     member_array = r.json()
     if not member_array['members']:
-        print("No subscribes for this time window!")
+        print("No unsubscribes for this time window!")
     else:
         total_members.append(member_array['members'])
         print("Total Members in Array is currently %s" % len(total_members))
     end_window_time = start_window_time
     start_window_time -= 7200
-    info = {'status':'subscribed', 'since_timestamp_opt':datetime.datetime.utcfromtimestamp(start_window_time).isoformat() , 'before_timestamp_opt':datetime.datetime.utcfromtimestamp(end_window_time).isoformat() , 'count':10000, 'fields':'members.email_address,members.last_changed'}
+    info = {'status':'unsubscribed', 'since_timestamp_opt':datetime.datetime.utcfromtimestamp(start_window_time).isoformat() , 'before_timestamp_opt':datetime.datetime.utcfromtimestamp(end_window_time).isoformat() , 'count':10000, 'fields':'members.email_address,members.timestamp_opt,members.last_changed'}
 
+# Setup DB Connection
 db = psycopg2.connect(
           user=config.user,
           password=config.pw,
@@ -63,32 +64,29 @@ db = psycopg2.connect(
 cur = db.cursor()
 
 # Create staging table for changes
-cur.execute("DROP TABLE IF EXISTS users_and_activities.mailchimp_sub_staging")
+cur.execute("DROP TABLE IF EXISTS users_and_activities.mailchimp_unsub_staging")
 db.commit()
-cur.execute("CREATE TABLE users_and_activities.mailchimp_sub_staging (like users_and_activities.mailchimp_sub)")
+cur.execute("CREATE TABLE users_and_activities.mailchimp_unsub_staging (like users_and_activities.mailchimp_unsub)")
 db.commit()
 
 # Iterate over entire member array and add to DB
 for member in total_members:
     for submember in member:
         email = submember['email_address']
+        opt_out_date = submember['timestamp_opt'].replace('T',' ').split('+')[0]
         confirm_time = submember['last_changed'].replace('T',' ').split('+')[0]
-        cur.execute("INSERT into users_and_activities.mailchimp_sub_staging values (%s,%s)", (email,confirm_time))
+        cur.execute("INSERT INTO users_and_activities.mailchimp_unsub_staging VALUES (%s,%s,%s)", (email,confirm_time,opt_out_date))
 
 db.commit()
 
 # Clean-Up and Remove Duplicates - Placeholder workaround since RedShift doesn't strictly enforce Primary Keys
 
-cur.execute("DELETE FROM users_and_activities.mailchimp_sub USING users_and_activities.mailchimp_sub_staging WHERE users_and_activities.mailchimp_sub.email_address = users_and_activities.mailchimp_sub_staging.email_address")
+cur.execute("DELETE FROM users_and_activities.mailchimp_unsub USING users_and_activities.mailchimp_unsub_staging WHERE users_and_activities.mailchimp_unsub.email_address = users_and_activities.mailchimp_unsub_staging.email_address")
 db.commit()
-cur.execute("INSERT INTO users_and_activities.mailchimp_sub SELECT * FROM users_and_activities.mailchimp_sub_staging")
+cur.execute("INSERT INTO users_and_activities.mailchimp_unsub SELECT * FROM users_and_activities.mailchimp_unsub_staging")
 db.commit()
-cur.execute("DROP TABLE users_and_activities.mailchimp_sub_staging")
+cur.execute("DROP TABLE users_and_activities.mailchimp_unsub_staging")
 db.commit()
-
-# Close Connection in case of loop failure
-cur.close()
-db.close()
 
 # Print How Long Run Took
 end = time.time()
