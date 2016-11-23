@@ -184,7 +184,7 @@ class MainSetup:
           cluster['all_paths'].extend(self.campaigns_dict[individual_id])
           del self.campaigns_dict[individual_id]
         except Exception as e:
-          print 'error', e
+          print ('error', e)
     for remaining in self.campaigns_dict:
       temp_dict = {'cluster':[remaining], 'nid':None, 'all_paths':self.campaigns_dict[remaining]}
       self.all_clusters.append(temp_dict)
@@ -214,7 +214,7 @@ class ClusterSubscribers:
       current_page = out_live['last_page']
       live = bool(out_live['live'])
     except:
-      print 'isLive fail'
+      print ('isLive fail')
       current_page = '1000'
       live = True
     return live, current_page
@@ -275,7 +275,7 @@ class ClusterSubscribers:
         self.cur.execute(q_sub)
         self.db.commit()
       except Exception as e:
-        print e, q_sub
+        print (e, q_sub)
 
     earliest_time = self.convertTime(all_dates)
     return earliest_time[-1]
@@ -353,7 +353,7 @@ class ClusterSubscribers:
     """runs it all for all campaigns in cluster by opt in path"""
     for path in self.all_paths:
       tracker_date = d.utcnow()
-      print path['campaign_id'], path['opt_in_id']
+      print (path['campaign_id'], path['opt_in_id'])
       temp_isLive = self.isLive(path['campaign_id'], path['opt_in_id'])
       live = temp_isLive[0]
       current_page = temp_isLive[1]
@@ -367,13 +367,13 @@ class ClusterSubscribers:
         last_date = self.getSubs(page_param, p_ret, path['campaign_id'], path['opt_in_id'], web_alpha)
         #double check last date by going one page down
         if last_date == d(1970, 1, 1, 0, 0):
-          print 'double checking...'
+          print ('double checking...')
           dbl_chk_page = page_param - 1
           last_date = self.getSubs(dbl_chk_page, p_ret, path['campaign_id'], path['opt_in_id'], web_alpha)
-          print last_date
+          print (last_date)
 
         if last_date < (d.utcnow() - t(weeks=4)) and self.force != True:
-          print 'not live anymore', path['campaign_id'], path['opt_in_id']
+          print ('not live anymore', path['campaign_id'], path['opt_in_id'])
           q_notlive = """insert into user_processing.mobile_campaign_component (campaign_id, opt_in_id, last_date, last_page, active, live)
            VALUES ({0},{1},'{2}',{3},'{4}','False') ON DUPLICATE KEY UPDATE last_date='{2}', last_page={3}, active='{4}', live='False'""".format(path['campaign_id'], path['opt_in_id'], d.strftime(last_date, '%Y-%m-%d %H:%M:%S'), last_page, path['campaign_status'])
           self.cur.execute(q_notlive)
@@ -391,10 +391,10 @@ class ClusterSubscribers:
 main = MainSetup()
 if main.clean == True:
   main.dailyClean()
-  print 'cleaning...'
-print 'backtime is ', main.backtime
-print 'force is ', main.force
-print 'backfill is ', main.backfill_campaign
+  print ('cleaning...')
+print ('backtime is ', main.backtime)
+print ('force is ', main.force)
+print ('backfill is ', main.backfill_campaign)
 main.getCampaigns()
 main.getCluster()
 main.processClusters()
@@ -403,7 +403,7 @@ for c in main.all_clusters:
   if main.backfill_campaign != None:
     if main.backfill_campaign not in c['cluster']:
       continue
-  print c['cluster']
+  print (c['cluster'])
   clust1 = ClusterSubscribers(c, main.force, main.backtime, main.db, main.cur)
   clust1.allNums()
   clust1.runPath()
@@ -412,7 +412,7 @@ for c in main.all_clusters:
 
 end_time = time.time()
 duration = end_time - start_time
-print 'duration: ', duration
+print ('duration: ', duration)
 
 main.cur.close()
 main.db.close()
