@@ -65,7 +65,7 @@ WEB_BASE = """
   VALUES ({})
 """
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
 
@@ -268,35 +268,35 @@ while tracker_date > stop:
 
 print ('Mobile user processing starting')
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
-gendered = [user_process.get_gender(i, db, cur) for i in master_unproc]
+gendered = [jc_user_process.get_gender(i, db, cur) for i in master_unproc]
 cur.close()
 db.close()
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
-zips = [user_process.get_zip(i, db, cur) for i in gendered]
+zips = [jc_user_process.get_zip(i, db, cur) for i in gendered]
 cur.close()
 db.close()
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
-demo = [user_process.get_demo(i, db, cur) for i in zips]
+demo = [jc_user_process.get_demo(i, db, cur) for i in zips]
 cur.close()
 db.close()
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
-income = [user_process.get_income_level(i, db, cur) for i in demo]
+income = [jc_user_process.get_income_level(i, db, cur) for i in demo]
 cur.close()
 db.close()
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
 insert = [insert_to_db_mobile(i, db, cur) for i in income]
@@ -316,7 +316,7 @@ left join dosomething.field_data_field_mobile m on u.uid=m.entity_id
 left join dosomething.field_data_field_address a on u.uid=a.entity_id
 where from_unixtime(created) >= date_sub(now(), interval %s hour)""" % (sys.argv[1])
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
 cur.execute(web_users)
@@ -330,35 +330,35 @@ for i in out:
 
 print ('Web user processing starting')
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
-gendered = [user_process.get_gender(i, db, cur) for i in master_unproc]
+gendered = [jc_user_process.get_gender(i, db, cur) for i in master_unproc]
 cur.close()
 db.close()
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
-zips = [user_process.get_zip(i, db, cur) for i in gendered]
+zips = [jc_user_process.get_zip(i, db, cur) for i in gendered]
 cur.close()
 db.close()
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
-demo = [user_process.get_demo(i, db, cur) for i in zips]
+demo = [jc_user_process.get_demo(i, db, cur) for i in zips]
 cur.close()
 db.close()
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
-income = [user_process.get_income_level(i, db, cur) for i in demo]
+income = [jc_user_process.get_income_level(i, db, cur) for i in demo]
 cur.close()
 db.close()
 
-conn_f = user_process.conn()
+conn_f = jc_user_process.conn()
 db = conn_f[0]
 cur = conn_f[1]
 insert = [insert_to_db_web(i, db, cur) for i in income]
