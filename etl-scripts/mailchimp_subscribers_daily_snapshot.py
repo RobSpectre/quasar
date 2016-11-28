@@ -32,7 +32,7 @@ pw = config.mailchimp_api_pass
 # Set Initial Offset of O
 member_offset = 0
 
-# MailChimp API v3.0 Paremeters to Get Subscribed Users over designated time window by paginating via "offset" parameter.
+# MailChimp API v3.0 Parameters to Get Subscribed Users over designated time window by paginating via "offset" parameter.
 # Grabs in batches of 1000 to be nice to API. Can modify based on query times.
 info = {'status':'subscribed', 'since_timestamp_opt':datetime.datetime.utcfromtimestamp(origin_time).isoformat() , 'before_timestamp_opt':datetime.datetime.utcfromtimestamp(time_now).isoformat() , 'count':1000, 'fields':'members.email_address,members.last_changed', 'offset':member_offset}
 
