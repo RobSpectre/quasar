@@ -22,7 +22,7 @@ def get_demo(obj, db, cur2):
     #print obj['zip']
     zip = obj['zip']
   else:
-    print 'no zip'
+    print('no zip')
     obj['race']=None
     return obj
 
@@ -42,7 +42,7 @@ def get_demo(obj, db, cur2):
     return obj
 
   except Exception as e:
-    print 'no data in get_demo, error: ', e
+    print('no data in get_demo, error: ', e)
     obj['race']=None
     return obj
 
@@ -65,7 +65,7 @@ def get_gender(obj, db, cur2):
       return obj
 
   except Exception as e:
-    print 'no data, error in get_gender: ', e, obj
+    print('no data, error in get_gender: ', e, obj)
     obj['gender']=None
     return obj
 
@@ -98,12 +98,12 @@ def get_zip(obj, db, cur2):
         return obj
 
     except Exception as e:
-      print 'no data, error in get_zip: ', e
+      print('no data, error in get_zip: ', e)
       obj['zip']=None
       return obj
 
   except Exception as e:
-    print 'zip', e
+    print('zip', e)
     #split on - for longer than 5 digits
     if obj['postal_code'] == None:
       obj['zip'] = obj['postal_code']
@@ -124,7 +124,7 @@ def get_income_level(obj, db, cur2):
     if obj['zip'] is not None:
         z = obj['zip']
     else:
-        print "no zip"
+        print("no zip")
         obj['income_level'] = None
         return obj
 
@@ -135,15 +135,15 @@ def get_income_level(obj, db, cur2):
         res = cur2.fetchone()
 
         if res is None or res.get('total') is None:
-            print "no median income data for zip", z
+            print("no median income data for zip", z)
             obj['income_level'] = None
             return obj
         else:
-            print "success for zip", z
+            print("success for zip", z)
             obj['income_level'] = _get_income_enum_index(int(res['total']))
             return obj
     except Exception as e:
-        print "No data in get_income_level, error:", e
+        print("No data in get_income_level, error:", e)
         obj['income_level'] = None
         return obj
 
