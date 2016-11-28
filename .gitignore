@@ -1,1 +1,4 @@
 **.retry
+etl-scripts/config.py
+etl-scripts/__pycache__
+etl-scripts/__pycache__/*
