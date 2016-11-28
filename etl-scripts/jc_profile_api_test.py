@@ -6,7 +6,7 @@ from datetime import datetime as d
 from datetime import timedelta as t
 from bs4 import BeautifulSoup as bs
 from math import log
-import user_process
+import jc_user_process
 import time
 import sys
 import config
