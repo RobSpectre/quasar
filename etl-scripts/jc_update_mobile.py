@@ -88,7 +88,7 @@ def getProfile(idx, start, finish, cred):
           status = 'Undeliverable'
 
         opt_outs.append((i.phone_number.text, status, converted_date))
-    print ()'current len opt_outs', len(opt_outs))
+    print ('current len opt_outs', len(opt_outs))
 
 def dbConn():
   """mysql conn and cursor"""
