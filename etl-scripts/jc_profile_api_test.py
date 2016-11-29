@@ -91,7 +91,7 @@ def insert_to_db_mobile(obj, db, cur):
       pass
     if obj[k] is None or obj[k] == '':
       values.append('NULL')
-    elif type(obj[k]) == int or type(obj[k]) == long:
+    elif type(obj[k]) == int:
       values.append(str(obj[k]))
     elif type(obj[k]) == d:
       values.append(str(obj[k]).join(['"', '"']))
@@ -117,7 +117,7 @@ def insert_to_db_web(obj, db, cur):
       pass
     if obj[k] is None or obj[k] == '':
       values.append('NULL')
-    elif type(obj[k]) == int or type(obj[k]) == long:
+    elif type(obj[k]) == int:
       values.append(str(obj[k]))
     elif type(obj[k]) == d:
       values.append(str(obj[k]).join(['"', '"']))
