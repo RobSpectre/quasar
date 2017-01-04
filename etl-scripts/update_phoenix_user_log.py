@@ -11,14 +11,14 @@ db = MySQLdb.connect(host=config.host, #hostname
 
 cur = db.cursor()
 
-# Record start time
+# Record start time.
 start_time = time.time()
 
-# Get List of All Phoenix Staging Tables
+# Get list of all Phoenix DB staging tables.
 cur.execute("SHOW TABLES LIKE '%_staging_changes';")
 db.commit()
 
-# Delete all pre-existing staging tables for re-runs of script
+# Delete all pre-existing staging tables for re-runs of script.
 old_staging_tables = cur.fetchall()
 for x in old_staging_tables:
     staging_table_name = str(x).strip('(').strip(')').strip(',').strip("'")
@@ -27,11 +27,11 @@ for x in old_staging_tables:
     cur.execute(drop_table)
     db.commit()
 
-# Get List of All Phoenix Snapshots
+# Get list of all Phoenix snapshots.
 cur.execute("SHOW TABLES;")
 db.commit()
 
-# Iterate over tables and print name, testing
+# Iterate over tables and print name.
 table_snapshot = cur.fetchall()
 for x in table_snapshot:
     table_name = str(x).strip('(').strip(')').strip(',').strip("'")
@@ -51,7 +51,7 @@ for x in table_snapshot:
     cur.execute(create_table)
     db.commit()
 
-# Get List of All Newly Generated Phoenix Staging Tables
+# Get list of all newly generated Phoenix staging tables.
 cur.execute("SHOW TABLES LIKE '%_staging_changes';")
 db.commit()
 
@@ -67,11 +67,11 @@ for x in staging_tables:
     cur.execute(drop_table)
     db.commit()
 
-# Close Cursor and Connection
+# Close cursor and connection.
 cur.close()
 db.close()
 
-# Show Total Time Run Takes
+# Show total time run.
 end_time = time.time()
 duration = end_time - start_time
 print ('duration: ', duration)
