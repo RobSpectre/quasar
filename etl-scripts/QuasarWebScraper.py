@@ -33,10 +33,10 @@ class Scraper:
         response = self.session.get(self.url + path, params=query_params)
         return self.processResponse(response)
 
-    def post(self, path, body = [])
+    def post(self, path, body = []):
         response = self.session.post(self.url + path, body=body)
         return self.processResponse(response)
 
     # Stub method to handle data processing later
-    def processResponse(response)
+    def processResponse(response):
         return response
