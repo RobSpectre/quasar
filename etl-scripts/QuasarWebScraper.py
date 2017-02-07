@@ -3,9 +3,10 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 class Scraper:
-    """ This class serves as a base web scraper top-level class for the
-    DoSomething.org data platform, AKA Quasar. The intent is to extend this
-    to handle the various DS services, e.g. Northstar, Gambit, Rogue, etc.
+    """Top-level web-scraper class for the DoSomething.org data platform, Quasar.
+
+    The intent is to extend this to handle the various DS services as their own
+    library for various services, e.g. Northstar, Gambit, Rogue, etc.
 
     The code below is re-purposed and inspired by
     http://stackoverflow.com/questions/21371809/cleanly-setting-max-retries-on-python-requests-get-or-post-method.
