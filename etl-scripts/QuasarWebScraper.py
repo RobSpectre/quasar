@@ -15,16 +15,14 @@ class Scraper:
     me learn more about OOP in general and in Python specifically.
     """
 
-
     def __init__(self, url, retry_total=6, backoff_time=1.9):
-        """ Sets up http/s requests with retries and backoff intervals.
+        """Set up http/s requests with retries and backoff intervals.
 
         Args:
             url (str): URL to make request against.
             retry_total (int): Total number of retries.
             backoff_time (float): In-between backup intervals.
         """
-
         # Create a session
         self.session = requests.Session()
         self.url = url
@@ -41,15 +39,26 @@ class Scraper:
         self.session.mount('http://', http)
         self.session.mount('https://', https)
 
-    # Define basic get/post logic.
     def get(self, path, query_params=''):
+        """Basic GET request method.
+
+        Args:
+            path (str): Add to base URL defined by init for full URI.
+            query_params (dict): Query parameters for a request, default none.
+        """
         response = self.session.get(self.url + path, params=query_params)
         return self.processResponse(response)
 
-    def post(self, path, body = []):
+    def post(self, path, body=[]):
+        """Basic POST request method.
+
+        Args:
+            path (str): Add to base URL defined by init for full URI.
+            body (dict): Post data for a request, default none.
+        """
         response = self.session.post(self.url + path, body=body)
         return self.processResponse(response)
 
-    # Stub method to handle data processing later.
     def processResponse(response):
+        """Stub method to handle data processing in vFuture."""
         return response
