@@ -5,8 +5,6 @@ from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 from QuasarWebScraper import Scraper
 
-
-# Setup new scraper class to Use Mailchimp endpoint and basic auth.
 class NorthstarScraper(Scraper):
 
     def __init__(self):
@@ -34,7 +32,9 @@ class NorthstarScraper(Scraper):
     def get(self, path, query_params=''):
         auth_headers = {'Authorization': 'Bearer ' + str(self.getToken())}
         response = self.session.get(self.url + path, headers=auth_headers, params=query_params)
-        return response.json()
+        return self.processResponse(response)
+
+        # return response.json()
 
     # Stub class for parsing any response as JSON. Currently has some parsing issues.
     def processResponse(self, response):
@@ -55,3 +55,7 @@ class NorthstarScraper(Scraper):
     def pageCount(self, users=100, page_number=1):
         page_count = self.get('/v1/users', {'limit': users, 'page': page_number})
         return(page_count['meta']['pagination']['total_pages'])
+
+testNS = NorthstarScraper()
+print(testNS.userCount())
+print(testNS.getUsers(2,2))
