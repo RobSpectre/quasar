@@ -46,13 +46,12 @@ else:
     i = int(sys.argv[1])
 """Check if page starting point provided, otherwise use last processed point."""
 
-def ts(base_value):
+def to_string(base_value):
     """Converts to string and replaces values with NULL when blank or None."""
     base_string = str(base_value)
     strip_special_chars = re.sub(r'[()<>/"\'\\]','',base_string)
     transform_null = re.sub(r'^$|\bNone\b','NULL',strip_special_chars)
-    transformed = str(transform_null)
-    return transformed
+    return str(transform_null)
 
 while i <= ns_pages:
     current_page = ns_fetcher.getUsers(100, i)
@@ -63,11 +62,13 @@ while i <= ns_pages:
                                                 addr_zip, country, language, agg_id, cgg_id) \
                                                 VALUES(\"{0}\",\"{1}\",{2},\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\
                                                 \"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",NULL,NULL)".format(\
-                                                ts(user['id']),ts(user['created_at']),ts(user['drupal_id']),ts(user['source']), \
-                                                ts(user['email']),ts(user['mobile']),ts(user['birthdate']),ts(user['first_name']),\
-                                                ts(user['last_name']),ts(user['addr_street1']),ts(user['addr_street2']), \
-                                                ts(user['addr_city']),ts(user['addr_state']),ts(user['addr_zip']),\
-                                                ts(user['country']),ts(user['language']))
+                                                to_string(user['id']), to_string(user['created_at']), to_string(user['drupal_id']),\
+                                                to_string(user['source']), to_string(user['email']), to_string(user['mobile']),\
+                                                to_string(user['birthdate']), to_string(user['first_name']),\
+                                                to_string(user['last_name']), to_string(user['addr_street1']),\
+                                                to_string(user['addr_street2']), to_string(user['addr_city']),\
+                                                to_string(user['addr_state']), to_string(user['addr_zip']),\
+                                                to_string(user['country']),to_string(user['language']))
         print(query)
         cur.execute(query)
         db.commit()
