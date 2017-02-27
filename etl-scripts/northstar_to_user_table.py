@@ -24,11 +24,11 @@ ns_fetcher = NorthstarScraper()
 
 ns_member_counter = ns_fetcher.userCount()
 ns_pages = ns_member_counter[1]
-"""Get current max page number."""
+# Get current max page number.
 
-db = MySQLdb.connect(host=config.host,  #  hostname
-          user=config.user,             #  username
-          passwd=config.pw)             #  password
+db = MySQLdb.connect(host=config.host,  # hostname
+                     user=config.user,  # username
+                     passwd=config.pw)  # password
 
 db.set_character_set('utf8')
 cur = db.cursor()
@@ -46,6 +46,7 @@ if len(sys.argv) < 2:
 else:
     i = int(sys.argv[1])
 """Check if page start point provided, otherwise use last processed point."""
+
 
 def to_string(base_value):
     """Converts to string and replaces values with NULL when blank or None."""
@@ -71,32 +72,32 @@ while i <= ns_pages:
                                             \"{4}\",\"{5}\",\"{6}\",\"{7}\",\
                                             \"{8}\",\"{9}\",\"{10}\",\"{11}\",\
                                             \"{12}\",\"{13}\",\"{14}\",\"{15}\"\
-                                            ,NULL,NULL)".format(\
-                                            to_string(user['id']),\
-                                            to_string(user['created_at']),\
-                                            to_string(user['drupal_id']),\
-                                            to_string(user['source']),\
-                                            to_string(user['email']),\
-                                            to_string(user['mobile']),\
-                                            to_string(user['birthdate']),\
-                                            to_string(user['first_name']),\
-                                            to_string(user['last_name']),\
-                                            to_string(user['addr_street1']),\
-                                            to_string(user['addr_street2']),\
-                                            to_string(user['addr_city']),\
-                                            to_string(user['addr_state']),\
-                                            to_string(user['addr_zip']),\
-                                            to_string(user['country']),\
+                                            ,NULL,NULL)".format(
+                                            to_string(user['id']),
+                                            to_string(user['created_at']),
+                                            to_string(user['drupal_id']),
+                                            to_string(user['source']),
+                                            to_string(user['email']),
+                                            to_string(user['mobile']),
+                                            to_string(user['birthdate']),
+                                            to_string(user['first_name']),
+                                            to_string(user['last_name']),
+                                            to_string(user['addr_street1']),
+                                            to_string(user['addr_street2']),
+                                            to_string(user['addr_city']),
+                                            to_string(user['addr_state']),
+                                            to_string(user['addr_zip']),
+                                            to_string(user['country']),
                                             to_string(user['language']))
         print(query)
         cur.execute(query)
         db.commit()
-    i+=1
+    i += 1
     cur.execute("REPLACE INTO quasar_etl_status.northstar_ingestion \
                 (counter_name, counter_value) VALUES(\"last_page_scraped\",\
                 \"{0}\")".format(i))
     db.commit()
 
 end_time = time.time()  # Record when script stopped running.
-duration = end_time - start_time # Total duration in seconds.
-print ('duration: ', duration)
+duration = end_time - start_time  # Total duration in seconds.
+print('duration: ', duration)
