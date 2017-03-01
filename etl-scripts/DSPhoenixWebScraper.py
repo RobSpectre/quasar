@@ -3,6 +3,7 @@ import config
 from QuasarWebScraper import Scraper
 from requests.auth import HTTPBasicAuth
 
+
 class PhoenixScraper(Scraper):
     """Class for extracting Phoenix data via API."""
 
@@ -11,7 +12,7 @@ class PhoenixScraper(Scraper):
     ds_pass = config.ds_phoenix_api_pw
 
     def __init__(self, ds_phoenix_url='https://www.dosomething.org'):
-        """Set Phoenix API with all the retry goodness of Quasar Web Scraper."""
+        """Set Phoenix API with all retry goodness of Quasar Web Scraper."""
         Scraper.__init__(self, ds_phoenix_url)
 
     def get(self, path, query_params=''):
