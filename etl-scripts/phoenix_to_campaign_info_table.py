@@ -7,8 +7,6 @@ import sys
 start_time = time.time()
 """Keep track of start time of script."""
 
-phoenix_campaigns = phoenix_fetcher.getCampaigns()
-
 db = MySQLdb.connect(host=config.host,  # hostname
                      user=config.user,  # username
                      passwd=config.pw)  # password
