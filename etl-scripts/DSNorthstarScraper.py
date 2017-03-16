@@ -41,10 +41,23 @@ class NorthstarScraper(Scraper):
             users (int): Users per page returned, default 100, max 100.
             page_number (int): Page number to return, default 1.
         """
-        user_response = self.get('/v1/users', {'limit': users, 'page': page_number})
+        user_response = self.get('/v1/users', {'limit': users, 'page': page_number, 'pagination': 'cursor'})
         return(user_response['data'])
 
     def userCount(self, users=100, page_number=1):
         """Get total user count and pages."""
         get_count = self.get('/v1/users', {'limit': users, 'page': page_number})
         return(get_count['meta']['pagination']['total'], get_count['meta']['pagination']['total_pages'])
+
+    def nextPageStatus(self, users=100, page_number=1):
+        """Get users in max batch size by default from Northstar API.
+
+        Args:
+            users (int): Users per page returned, default 100, max 100.
+            page_number (int): Page number to return, default 1.
+        """
+        user_response = self.get('/v1/users', {'limit': users, 'page': page_number, 'pagination': 'cursor'})
+        if user_response['meta']['cursor']['next'] is None:
+            return False
+        else:
+            return user_response['meta']['cursor']['next']
