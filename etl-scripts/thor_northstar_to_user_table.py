@@ -21,10 +21,7 @@ start_time = time.time()
 """Keep track of start time of script."""
 
 ns_fetcher = NorthstarScraper('https://northstar-thor.dosomething.org')
-
-ns_member_counter = ns_fetcher.userCount()
-# ns_pages = ns_member_counter[1]
-# Get current max page number.
+nextPage = True
 
 db = MySQLdb.connect(host=config.host,  # hostname
                      user=config.user,  # username
@@ -69,12 +66,16 @@ while ns_fetcher.nextPageStatus(100, i) is not None:
                                             addr_street1, addr_street2,\
                                             addr_city, addr_state,\
                                             addr_zip, country, language,\
-                                            agg_id, cgg_id)\
+                                            agg_id, cgg_id,\
+                                            moco_commons_profile_id,\
+                                            moco_current_status,\
+                                            moco_source_detail)\
                                             VALUES(\"{0}\",\"{1}\",{2},\"{3}\",\
                                             \"{4}\",\"{5}\",\"{6}\",\"{7}\",\
                                             \"{8}\",\"{9}\",\"{10}\",\"{11}\",\
                                             \"{12}\",\"{13}\",\"{14}\",\"{15}\"\
-                                            ,NULL,NULL)".format(
+                                            ,NULL,NULL,\"{16}\",\"{17}\",\
+                                            \"{18}\")".format(
                                             to_string(user['id']),
                                             to_string(user['created_at']),
                                             to_string(user['drupal_id']),
@@ -90,18 +91,62 @@ while ns_fetcher.nextPageStatus(100, i) is not None:
                                             to_string(user['addr_state']),
                                             to_string(user['addr_zip']),
                                             to_string(user['country']),
-                                            to_string(user['language']))
-        print(query)
+                                            to_string(user['language']),
+                                            to_string(user['mobilecommons_id']),
+                                            to_string(user['mobilecommons_status']),
+                                            to_string(user['source_detail']))
         cur.execute(query)
         db.commit()
-    if ns_fetcher.nextPageStatus(100, i) is None:
-        break
-    else:
+    nextPage = ns_fetcher.nextPageStatus(100, i)
+    if nextPage is True:
         i += 1
         cur.execute("REPLACE INTO quasar_etl_status.thor_northstar_ingestion \
                 (counter_name, counter_value) VALUES(\"last_page_scraped\",\
                 \"{0}\")".format(i))
         db.commit()
+    else:
+        current_page = ns_fetcher.getUsers(100, i)
+        for user in current_page:
+            query = "REPLACE INTO quasar.thor_users (northstar_id,\
+                                                northstar_created_at_timestamp,\
+                                                drupal_uid,\
+                                                northstar_id_source_name,\
+                                                email, mobile, birthdate,\
+                                                first_name, last_name,\
+                                                addr_street1, addr_street2,\
+                                                addr_city, addr_state,\
+                                                addr_zip, country, language,\
+                                                agg_id, cgg_id,\
+                                                moco_commons_profile_id,\
+                                                moco_current_status,\
+                                                moco_source_detail)\
+                                                VALUES(\"{0}\",\"{1}\",{2},\"{3}\",\
+                                                \"{4}\",\"{5}\",\"{6}\",\"{7}\",\
+                                                \"{8}\",\"{9}\",\"{10}\",\"{11}\",\
+                                                \"{12}\",\"{13}\",\"{14}\",\"{15}\"\
+                                                ,NULL,NULL,\"{16}\",\"{17}\",\
+                                                \"{18}\")".format(
+                                                to_string(user['id']),
+                                                to_string(user['created_at']),
+                                                to_string(user['drupal_id']),
+                                                to_string(user['source']),
+                                                to_string(user['email']),
+                                                to_string(user['mobile']),
+                                                to_string(user['birthdate']),
+                                                to_string(user['first_name']),
+                                                to_string(user['last_name']),
+                                                to_string(user['addr_street1']),
+                                                to_string(user['addr_street2']),
+                                                to_string(user['addr_city']),
+                                                to_string(user['addr_state']),
+                                                to_string(user['addr_zip']),
+                                                to_string(user['country']),
+                                                to_string(user['language']),
+                                                to_string(user['mobilecommons_id']),
+                                                to_string(user['mobilecommons_status']),
+                                                to_string(user['source_detail']))
+            cur.execute(query)
+            db.commit()
 
 end_time = time.time()  # Record when script stopped running.
 duration = end_time - start_time  # Total duration in seconds.
