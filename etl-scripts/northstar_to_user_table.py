@@ -57,6 +57,7 @@ def to_string(base_value):
     transform_null = re.sub(r'^$|\bNone\b', 'NULL', strip_special_chars)
     return str(transform_null)
 
+
 while nextPage is True:
     current_page = ns_fetcher.getUsers(100, i)
     for user in current_page:
