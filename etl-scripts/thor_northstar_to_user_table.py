@@ -5,9 +5,9 @@ import re
 import sys
 from DSNorthstarScraper import NorthstarScraper
 
-"""DS Northstar to Quasar User ETL script.
+"""DS Northstar to Quasar User ETL Test script.
 
-This ETL scripts scrapes the DoSomething Northstar User API and ETL's the
+This ETL scripts scrapes the DoSomething Thor Northstar User API and ETL's the
 output to our MySQL Quasar data warehouse.
 
 The script takes an optional argument for what Northstar page result to start
@@ -20,13 +20,12 @@ that gets updated on ingestion loop.
 start_time = time.time()
 """Keep track of start time of script."""
 
-ns_fetcher = NorthstarScraper()
+ns_fetcher = NorthstarScraper('https://northstar-thor.dosomething.org')
 
 # Set pagination variable to be true by default. This
 # will track whether there are any more pages in a
 # result set. If there aren't, will return false.
 nextPage = True
-
 
 db = MySQLdb.connect(host=config.host,  # hostname
                      user=config.user,  # username
@@ -40,7 +39,7 @@ cur.execute('SET character_set_connection=utf8;')
 """Set UTF-8 encoding on MySQL connection."""
 
 if len(sys.argv) < 2:
-    cur.execute("SELECT * from quasar_etl_status.northstar_ingestion \
+    cur.execute("SELECT * from quasar_etl_status.thor_northstar_ingestion \
                  WHERE counter_name = 'last_page_scraped';")
     db.commit()
     last_page = cur.fetchall()
@@ -61,7 +60,7 @@ def to_string(base_value):
 while nextPage is True:
     current_page = ns_fetcher.getUsers(100, i)
     for user in current_page:
-        query = "REPLACE INTO quasar.users (northstar_id,\
+        query = "REPLACE INTO quasar.thor_users (northstar_id,\
                                             northstar_created_at_timestamp,\
                                             drupal_uid,\
                                             northstar_id_source_name,\
@@ -104,14 +103,14 @@ while nextPage is True:
     nextPage = ns_fetcher.nextPageStatus(100, i)
     if nextPage is True:
         i += 1
-        cur.execute("REPLACE INTO quasar_etl_status.northstar_ingestion \
-                    (counter_name, counter_value) VALUES(\"last_page_scraped\",\
-                    \"{0}\")".format(i))
+        cur.execute("REPLACE INTO quasar_etl_status.thor_northstar_ingestion \
+                (counter_name, counter_value) VALUES(\"last_page_scraped\",\
+                \"{0}\")".format(i))
         db.commit()
     else:
         current_page = ns_fetcher.getUsers(100, i)
         for user in current_page:
-            query = "REPLACE INTO quasar.users (northstar_id,\
+            query = "REPLACE INTO quasar.thor_users (northstar_id,\
                                                 northstar_created_at_timestamp,\
                                                 drupal_uid,\
                                                 northstar_id_source_name,\
