@@ -21,7 +21,12 @@ start_time = time.time()
 """Keep track of start time of script."""
 
 ns_fetcher = NorthstarScraper()
+
+# Set pagination variable to be true by default. This
+# will track whether there are any more pages in a
+# result set. If there aren't, will return false.
 nextPage = True
+
 
 db = MySQLdb.connect(host=config.host,  # hostname
                      user=config.user,  # username
@@ -43,6 +48,7 @@ if len(sys.argv) < 2:
 else:
     i = int(sys.argv[1])
 """Check if page start point provided, otherwise use last processed point."""
+
 
 def to_string(base_value):
     """Converts to string and replaces values with NULL when blank or None."""
@@ -95,7 +101,6 @@ while nextPage is True:
         cur.execute(query)
         db.commit()
     nextPage = ns_fetcher.nextPageStatus(100, i)
-    print(nextPage)
     if nextPage is True:
         i += 1
         cur.execute("REPLACE INTO quasar_etl_status.northstar_ingestion \

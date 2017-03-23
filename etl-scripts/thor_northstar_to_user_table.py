@@ -21,6 +21,10 @@ start_time = time.time()
 """Keep track of start time of script."""
 
 ns_fetcher = NorthstarScraper('https://northstar-thor.dosomething.org')
+
+# Set pagination variable to be true by default. This
+# will track whether there are any more pages in a
+# result set. If there aren't, will return false.
 nextPage = True
 
 db = MySQLdb.connect(host=config.host,  # hostname
@@ -53,8 +57,7 @@ def to_string(base_value):
     return str(transform_null)
 
 
-# while i <= ns_pages:
-while ns_fetcher.nextPageStatus(100, i) is not None:
+while nextPage is True:
     current_page = ns_fetcher.getUsers(100, i)
     for user in current_page:
         query = "REPLACE INTO quasar.thor_users (northstar_id,\
