@@ -1,12 +1,11 @@
 import MySQLdb
-import MySQLdb.converters
 import config
 import time
 import re
 import sys
 from DSNorthstarScraper import NorthstarScraper
 
-"""DS Northstar to Quasar User ETL Test script.
+"""DS Northstar to Quasar User ETL QA script.
 
 This ETL scripts scrapes the DoSomething Thor Northstar User API and ETL's the
 output to our MySQL Quasar data warehouse.
