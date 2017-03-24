@@ -168,6 +168,9 @@ while nextPage is True:
                                                 to_string(user['source_detail'])))
             db.commit()
 
+cur.close()
+db.close()
+
 end_time = time.time()  # Record when script stopped running.
 duration = end_time - start_time  # Total duration in seconds.
 print('duration: ', duration)
