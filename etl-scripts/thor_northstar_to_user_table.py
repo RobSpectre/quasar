@@ -36,27 +36,37 @@ db = MySQLdb.connect(host=config.host,  # hostname
 
 cur = db.cursor()
 
-if len(sys.argv) == 1:
-    northstar_env_url = 'https://northstar.dosomething.org'
-    cur.execute("SELECT * from quasar_etl_status.thor_northstar_ingestion \
-                 WHERE counter_name = 'last_page_scraped';")
-    db.commit()
-    last_page = cur.fetchall()
-    i = last_page[0][1]
-elif len(sys.argv) == 2:
-    northstar_env_url = 'https://northstar.dosomething.org'
-    i = int(sys.argv[1])
-elif len(sys.argv) == 3:
+if len(sys.argv) == 3:
     if sys.argv[1] == 'prod':
         northstar_env_url = 'https://northstar.dosomething.org'
+        db_env = 'users'
     elif sys.argv[1] == 'thor':
         northstar_env_url = 'https://northstar-thor.dosomething.org'
+        db_env = 'thor_users'
     else:
-        print("Please provide a working Northstar environment.")
+        print("Please provide a working Northstar environment: thor/prod.")
         sys.exit(0)
-    i = int(sys.argv[2])
+    if sys.argv[2] == 'cont':
+       if sys.argv[1] == 'prod':
+          cur.execute("SELECT * from quasar_etl_status.northstar_ingestion \
+                       WHERE counter_name = 'last_page_scraped'")
+          db.commit()
+          last_page = cur.fetchall()
+          i = last_page[0][1]
+       elif sys.argv[1] == 'thor':
+          cur.execute("SELECT * from quasar_etl_status.thor_northstar_ingestion \
+                       WHERE counter_name = 'last_page_scraped'")
+          db.commit()
+          last_page = cur.fetchall()
+          i = last_page[0][1]
+       else:
+          print("Can not continue, invalid env specified.")
+    elif isinstance(sys.argv[2], int):
+        i = int(sys.argv[2])
+    else:
+        print("Please input 'cont' to continue backfill or integer value.")
 else:
-    print("Sorry, please specify proper arguments.")
+    print("Sorry, please specify proper arguments. i.e. env/page")
 """Determine environment, and page to start from.
 
 With no arguments, env is set to prod and ingestion begins from last page.
