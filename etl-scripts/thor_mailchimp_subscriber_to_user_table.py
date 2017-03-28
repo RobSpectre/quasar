@@ -79,12 +79,12 @@ cur = db.cursor()
 # Iterate over entire member array and add to DB
 for member in total_members:
     for submember in member:
-        cur.execute("select northstar_id from quasar.thor_users \
-                                   where email = %s",(submember['email_address'],))
-        northstar_id = cur.fetchall()
-        if northstar_id is '':
-            print("Email not ingested yet!")
+        row_count = cur.execute("SELECT northstar_id FROM quasar.thor_users \
+                                   WHERE email = %s",(submember['email_address'],))
+        if row_count < 1:
+            pass
         else:
+            northstar_id = cur.fetchall()
             first_subscribed = submember['timestamp_opt'].replace('T',' ').split('+')[0]
             status = submember['status']
             list_id = submember['list_id']
