@@ -49,7 +49,7 @@ member_array = r.json()
 # Iterate over entire list set till no more members are returned.
 while (len(member_array['members'])) > 1:
     total_members.append(member_array['members'])
-    print("Total Members in Array is currently %s" % len(total_members))
+    print("Total Members in Array is currently %s" % (len(total_members) * 1000))
     member_offset += 1000
     info = {'status':'subscribed',
             'since_timestamp_opt':datetime.datetime.utcfromtimestamp(origin_time).isoformat(),
