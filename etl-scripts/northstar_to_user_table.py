@@ -36,6 +36,17 @@ db = MySQLdb.connect(host=config.host,  # hostname
 
 cur = db.cursor()
 
+def isInt(s):
+    """Check if value is type int and return boolean result.
+    Source at http://stackoverflow.com/questions/1265665/python-check-if-a-string-represents-an-int-without-using-try-except
+    """
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
+
 if len(sys.argv) == 3:
     if sys.argv[1] == 'prod':
         northstar_env_url = 'https://northstar.dosomething.org'
@@ -61,12 +72,14 @@ if len(sys.argv) == 3:
           i = last_page[0][1]
        else:
           print("Can not continue, invalid env specified.")
-    elif isinstance(sys.argv[2], int):
+    elif isInt(sys.argv[2]):
         i = int(sys.argv[2])
     else:
         print("Please input 'cont' to continue backfill or integer value.")
+        sys.exit(0)
 else:
     print("Sorry, please specify proper arguments. i.e. env/page")
+    sys.exit(0)
 """Determine environment, and page to start from.
 
 With no arguments, env is set to prod and ingestion begins from last page.
