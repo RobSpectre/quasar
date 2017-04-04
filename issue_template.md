@@ -16,7 +16,7 @@ _TASK_
 
 #### Request
 
-#### Why is this important
+#### Why This is Important
 
 #### Definition of Done
 
