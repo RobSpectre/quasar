@@ -4,11 +4,11 @@ from requests.auth import HTTPBasicAuth
 import time
 import datetime
 import csv
-from subprocess import Popen, PIPE, STDOUT
 import MySQLdb
 import MySQLdb.converters
 import sys
 import config
+
 
 def isInt(s):
     """Check if value is type int and return boolean result.
@@ -28,8 +28,8 @@ un = config.mailchimp_api_user
 pw = config.mailchimp_api_pass
 
 conv_dict = MySQLdb.converters.conversions.copy()
-conv_dict[246]=float
-conv_dict[3]=int
+conv_dict[246] = float
+conv_dict[3] = int
 
 # Setup DB Connnection
 # Moved from earlier in script to not have open MySQL connection that can timeout if
@@ -78,17 +78,18 @@ origin_time = time_now - backfill_time
 
 # MailChimp API v3.0 Parameters to Get Subscribed Users over designated time window by paginating via "offset" parameter.
 # Grabs in batches of 1000 to be nice to API. Can modify based on query times.
-info = {'status':'subscribed',
-        'since_timestamp_opt':datetime.datetime.utcfromtimestamp(origin_time).isoformat(),
-        'before_timestamp_opt':datetime.datetime.utcfromtimestamp(time_now).isoformat(),
-        'count':1000, 'fields':'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
-        'offset':member_offset}
+info = {'status': 'subscribed',
+        'since_timestamp_opt': datetime.datetime.utcfromtimestamp(origin_time).isoformat(),
+        'before_timestamp_opt': datetime.datetime.utcfromtimestamp(time_now).isoformat(),
+        'count': 1000, 'fields': 'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
+        'offset': member_offset}
 # Initialize Empty List for Total Members
 total_members = []
 
 
 # Get first batch of users
-r = requests.get('https://us4.api.mailchimp.com/3.0/lists/f2fab1dfd4/members',auth=HTTPBasicAuth(un, pw), params=info)
+r = requests.get('https://us4.api.mailchimp.com/3.0/lists/f2fab1dfd4/members',
+                 auth=HTTPBasicAuth(un, pw), params=info)
 member_array = r.json()
 
 # Iterate over entire list set till no more members are returned.
@@ -98,14 +99,14 @@ while (len(member_array['members'])) > 1:
         print("Processing next page. Up to %s processed." % member_offset)
         for submember in member:
             cur.execute("SELECT northstar_id FROM quasar.users \
-                        WHERE email = %s",(submember['email_address'],))
+                        WHERE email = %s", (submember['email_address'],))
             northstar_email_matches = cur.rowcount
             if northstar_email_matches < 1:
                 pass
             else:
-                for x in range(0,northstar_email_matches):
+                for x in range(0, northstar_email_matches):
                     northstar_id = cur.fetchone()
-                    first_subscribed = submember['timestamp_opt'].replace('T',' ').split('+')[0]
+                    first_subscribed = submember['timestamp_opt'].replace('T', ' ').split('+')[0]
                     status = submember['status']
                     list_id = submember['list_id']
                     avg_open_rate = submember['stats']['avg_open_rate']
@@ -119,8 +120,10 @@ while (len(member_array['members'])) > 1:
                                 mailchimp_avg_click_rate = %s, mailchimp_latitude = %s,\
                                 mailchimp_longitude = %s, mailchimp_country_code = %s \
                                 WHERE northstar_id = %s",
-                                (first_subscribed,status,list_id,avg_open_rate,
-                                avg_click_rate,latitude,longitude,country_code,northstar_id))
+                                (first_subscribed, status,
+                                 list_id, avg_open_rate, avg_click_rate,
+                                 latitude, longitude, country_code,
+                                 northstar_id))
                     db.commit()
         total_members = []
     member_offset += 1000
@@ -128,12 +131,14 @@ while (len(member_array['members'])) > 1:
                  (counter_name, counter_value) VALUES(\"mailchimp_member_offset\",\
                  \"{0}\")".format(member_offset))
     db.commit()
-    info = {'status':'subscribed',
-            'since_timestamp_opt':datetime.datetime.utcfromtimestamp(origin_time).isoformat(),
-            'before_timestamp_opt':datetime.datetime.utcfromtimestamp(time_now).isoformat(),
-            'count':1000, 'fields':'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
-            'offset':member_offset}
-    r = requests.get('https://us4.api.mailchimp.com/3.0/lists/f2fab1dfd4/members',auth=HTTPBasicAuth(un, pw), params=info)
+    info = {'status': 'subscribed',
+            'since_timestamp_opt': datetime.datetime.utcfromtimestamp(origin_time).isoformat(),
+            'before_timestamp_opt': datetime.datetime.utcfromtimestamp(time_now).isoformat(),
+            'count': 1000,
+            'fields': 'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
+            'offset': member_offset}
+    r = requests.get('https://us4.api.mailchimp.com/3.0/lists/f2fab1dfd4/members',
+                     auth=HTTPBasicAuth(un, pw), params=info)
     member_array = r.json()
 
 
