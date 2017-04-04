@@ -1,7 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 import time
-import datetime
+from datetime import datetime
 import MySQLdb
 import MySQLdb.converters
 import sys
@@ -41,6 +41,7 @@ db = MySQLdb.connect(host=config.host,  # hostname
                      passwd=config.pw,  # password
                      use_unicode=True,  # Use unicode for queries.
                      charset='utf8',    # Use UTF8 character set for queries.
+                     ssl=ca_settings,   # Connect using SSL
                      conv=conv_dict)    # datatype conversions
 
 cur = db.cursor()
@@ -81,8 +82,8 @@ origin_time = time_now - backfill_time
 # over designated time window by paginating via "offset" parameter.
 # Grabs in batches of 1000 to be nice to API. Can modify based on query times.
 info = {'status': 'subscribed',
-        'since_timestamp_opt': datetime.datetime.utcfromtimestamp(origin_time).isoformat(),
-        'before_timestamp_opt': datetime.datetime.utcfromtimestamp(time_now).isoformat(),
+        'since_timestamp_opt': datetime.utcfromtimestamp(origin_time).isoformat(),
+        'before_timestamp_opt': datetime.utcfromtimestamp(time_now).isoformat(),
         'count': 1000, 'fields': 'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
         'offset': member_offset}
 # Initialize Empty List for Total Members
@@ -134,8 +135,8 @@ while (len(member_array['members'])) > 1:
                  \"{0}\")".format(member_offset))
     db.commit()
     info = {'status': 'subscribed',
-            'since_timestamp_opt': datetime.datetime.utcfromtimestamp(origin_time).isoformat(),
-            'before_timestamp_opt': datetime.datetime.utcfromtimestamp(time_now).isoformat(),
+            'since_timestamp_opt': datetime.utcfromtimestamp(origin_time).isoformat(),
+            'before_timestamp_opt': datetime.utcfromtimestamp(time_now).isoformat(),
             'count': 1000,
             'fields': 'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
             'offset': member_offset}

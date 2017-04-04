@@ -41,6 +41,7 @@ db = MySQLdb.connect(host=config.host,  # hostname
                      passwd=config.pw,  # password
                      use_unicode=True,  # Use unicode for queries.
                      charset='utf8',    # Use UTF8 character set for queries.
+                     ssl=ca_settings,   # Connect using SSL
                      conv=conv_dict)    # datatype conversions
 
 cur = db.cursor()
