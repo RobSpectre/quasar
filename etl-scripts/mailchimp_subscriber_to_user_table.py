@@ -1,9 +1,7 @@
-import json
 import requests
 from requests.auth import HTTPBasicAuth
 import time
 import datetime
-import csv
 import MySQLdb
 import MySQLdb.converters
 import sys
@@ -20,6 +18,7 @@ def isInt(s):
     except ValueError:
         return False
 
+
 # This is to track time of script
 start = time.time()
 
@@ -32,7 +31,8 @@ conv_dict[246] = float
 conv_dict[3] = int
 
 # Setup DB Connnection
-# Moved from earlier in script to not have open MySQL connection that can timeout if
+# Moved from earlier in script to not
+# have open MySQL connection that can timeout if
 # API scraping takes a long time. Have seen timeouts happen.
 
 ca_settings = {'ca': '/home/quasar/rds-combined-ca-bundle.pem'}
@@ -72,11 +72,13 @@ else:
 
 # Start time in Unixtime to use internally in ETL processing
 time_now = time.time()
-# Set backfill to seconds and set backfill origin time to time_now - backfill_time in seconds
+# Set backfill to seconds
 backfill_time = backfill_hours * 3600
+# Set backfill origin time to time_now - backfill_time in seconds
 origin_time = time_now - backfill_time
 
-# MailChimp API v3.0 Parameters to Get Subscribed Users over designated time window by paginating via "offset" parameter.
+# MailChimp API v3.0 Parameters to Get Subscribed Users
+# over designated time window by paginating via "offset" parameter.
 # Grabs in batches of 1000 to be nice to API. Can modify based on query times.
 info = {'status': 'subscribed',
         'since_timestamp_opt': datetime.datetime.utcfromtimestamp(origin_time).isoformat(),
@@ -142,7 +144,7 @@ while (len(member_array['members'])) > 1:
     member_array = r.json()
 
 
-# Double Check to Commit DB Changes and Close Connection in case of loop failure
+# Commit DB Changes and Close Connection in case of loop failure
 cur.close()
 db.close()
 
