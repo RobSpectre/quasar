@@ -16,8 +16,10 @@ _TASK_
 
 #### Request
 
+#### Why is this important
+
+#### Definition of Done
+
 #### Additional Information
 
 - relevant campaign NIDs, run NIDs, dates, etc.
-
-#### Why This Matters/Use Case Example
