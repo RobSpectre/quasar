@@ -20,6 +20,8 @@ def isInt(s):
         return False
 
 
+mc_increment = 1000
+
 # This is to track time of script
 start = time.time()
 
@@ -88,7 +90,7 @@ origin_time = time_now - backfill_time
 info = {'status': 'subscribed',
         'since_timestamp_opt': datetime.utcfromtimestamp(origin_time).isoformat(),
         'before_timestamp_opt': datetime.utcfromtimestamp(time_now).isoformat(),
-        'count': 1000, 'fields': 'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
+        'count': mc_increment, 'fields': 'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
         'offset': member_offset}
 # Initialize Empty List for Total Members
 total_members = []
@@ -109,11 +111,15 @@ while (len(member_array['members'])) > 1:
                         WHERE email = %s", (submember['email_address'],))
             northstar_email_matches = cur.rowcount
             if northstar_email_matches < 1:
-                ns_fetcher.post('/v1/users', {'email': submember['email_address']})
+                try:
+                    print("Importing email %s" % submember['email_address'])
+                    ns_fetcher.post('/v1/users', {'email': submember['email_address']})
+                except:
+                    print("Something went wrong.")
             else:
                 pass
         total_members = []
-    member_offset += 1000
+    member_offset += mc_increment
     cur.execute("REPLACE INTO quasar_etl_status.northstar_ingestion \
                  (counter_name, counter_value) VALUES(\"mailchimp_to_northstar_offset\",\
                  \"{0}\")".format(member_offset))
@@ -121,7 +127,7 @@ while (len(member_array['members'])) > 1:
     info = {'status': 'subscribed',
             'since_timestamp_opt': datetime.utcfromtimestamp(origin_time).isoformat(),
             'before_timestamp_opt': datetime.utcfromtimestamp(time_now).isoformat(),
-            'count': 1000,
+            'count': mc_increment,
             'fields': 'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
             'offset': member_offset}
     r = requests.get('https://us4.api.mailchimp.com/3.0/lists/f2fab1dfd4/members',
