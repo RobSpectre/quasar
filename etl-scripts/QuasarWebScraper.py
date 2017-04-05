@@ -56,7 +56,7 @@ class Scraper:
             path (str): Add to base URL defined by init for full URI.
             body (dict): Post data for a request, default none.
         """
-        response = self.session.post(self.url + path, body=body)
+        response = self.session.post(self.url + path, data=body)
         return self.processResponse(response)
 
     def processResponse(response):

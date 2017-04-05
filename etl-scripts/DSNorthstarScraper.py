@@ -31,7 +31,20 @@ class NorthstarScraper(Scraper):
     def get(self, path, query_params=''):
         """Set get method to include OAuth 2 Token for Authorization."""
         auth_headers = {'Authorization': 'Bearer ' + str(self.getToken())}
-        response = self.session.get(self.url + path, headers=auth_headers, params=query_params)
+        response = self.session.get(self.url + path, headers=auth_headers,
+                                    params=query_params)
+        return response.json()
+
+    def post(self, path, body=[]):
+        """Set POST method to include OAuth 2 Token for Authorization.
+
+        Args:
+            path (str): Add to base URL defined by init for full URI.
+            body (dict): Post data for a request, default none.
+        """
+        auth_headers = {'Authorization': 'Bearer ' + str(self.getToken())}
+        response = self.session.post(self.url + path, headers=auth_headers,
+                                     data=body)
         return response.json()
 
     def getUsers(self, users=100, page_number=1):
