@@ -143,3 +143,4 @@ db.close()
 end = time.time()
 timer = end-start
 print("Total processing time was %s seconds." % timer)
+
