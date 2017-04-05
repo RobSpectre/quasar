@@ -107,7 +107,7 @@ while nextPage is True:
     for user in current_page:
         cur.execute("REPLACE INTO quasar.users (northstar_id,\
                     northstar_created_at_timestamp,\
-                    drupal_uid,\
+                    last_logged_in, drupal_uid,\
                     northstar_id_source_name,\
                     email, mobile, birthdate,\
                     first_name, last_name,\
