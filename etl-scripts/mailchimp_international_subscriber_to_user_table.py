@@ -57,7 +57,7 @@ if len(sys.argv) == 3:
 # Continue from last known offset or the beginning of hours.
     if sys.argv[2] == 'cont':
         cur.execute("SELECT * from quasar_etl_status.northstar_ingestion \
-                 WHERE counter_name = 'mailchimp_member_offset'")
+                 WHERE counter_name = 'mailchimp_intl_member_offset'")
         db.commit()
         last_offset = cur.fetchall()
         member_offset = last_offset[0][1]
@@ -132,7 +132,7 @@ while (len(member_array['members'])) > 1:
         total_members = []
     member_offset += mc_increment
     cur.execute("REPLACE INTO quasar_etl_status.northstar_ingestion \
-                 (counter_name, counter_value) VALUES(\"mailchimp_member_offset\",\
+                 (counter_name, counter_value) VALUES(\"mailchimp_intl_member_offset\",\
                  \"{0}\")".format(member_offset))
     db.commit()
     info = {'status': 'subscribed',
