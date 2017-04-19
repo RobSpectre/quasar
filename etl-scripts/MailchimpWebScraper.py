@@ -1,5 +1,7 @@
 import json
 import config
+import time
+from datetime import datetime
 from QuasarWebScraper import Scraper
 from requests.auth import HTTPBasicAuth
 
@@ -11,6 +13,9 @@ class PhoenixScraper(Scraper):
     # MailChimp API v3.0 HTTP Simple Auth Credentials
     un = config.mailchimp_api_user
     pw = config.mailchimp_api_pass
+
+    # Set start-teme as object creation time.
+    time_now = time.time()
 
     def __init__(self, ds_phoenix_url='https://us4.api.mailchimp.com'):
         """Set Phoenix API with all retry goodness of Quasar Web Scraper."""
@@ -24,9 +29,15 @@ class PhoenixScraper(Scraper):
                                     params=query_params)
         return response.json()
 
-    def getMembers(self, offset=0):
+    def getSubscribedMembers(self, backfill_hours=4, offset=0):
         """Get members from Main DS List."""
-        
+        origin_time = time_now - (backfill_hours * 3600)
+        info = {'status': 'subscribed',
+                'since_timestamp_opt': datetime.utcfromtimestamp(origin_time).isoformat(),
+                'before_timestamp_opt': datetime.utcfromtimestamp(time_now).isoformat(),
+                'count': mc_increment, 'fields': 'members.email_address,members.timestamp_opt,members.status,members.stats,members.list_id,members.location',
+                'offset': member_offset}
+        self.get('')
     def getPages(self):
         """Get total campaign pages."""
         page_response = self.get('/api/v1/campaigns', {'page': 1})

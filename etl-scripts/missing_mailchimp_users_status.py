@@ -61,7 +61,7 @@ total_members = cur.fetchall()
 
 for i in total_members:
     print(i[0])
-    user_md5 = computeMD5hash(i[0])
+    user_md5 = computeMD5hash(i[0].lower())
     r = requests.get('https://us4.api.mailchimp.com/3.0/lists/f2fab1dfd4/members/'\
                    + user_md5, auth=HTTPBasicAuth(un, pw))
     if r.status_code == 200:
