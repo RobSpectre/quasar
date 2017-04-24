@@ -43,7 +43,7 @@ while limit_num == 300:
     page_num += 1
     # Setup Mobile Commons API Payload and Request
     mob_com_api_profile_req = requests.Session()
-    retries = Retry(total=6, backoff_time=1.9)
+    retries = Retry(total=6, backoff_factor=1.9)
     mob_com_api_profile_req.mount('https://', HTTPAdapter(max_retries=retries))
     mob_com_profile_payload = { 'from' : origin_time_iso, 'to' : now_iso , 'limit': '300', 'page' : page_num }
     mob_com_api_profile_req = requests.get('https://secure.mcommons.com/api/profiles', params=mob_com_profile_payload, auth=(config.mc_user,config.mc_pw))
@@ -52,6 +52,7 @@ while limit_num == 300:
     # Set Num of profile for next run-through
     limit_num = int(profile_parse.profiles.get('num'))
     profiles = profile_parse.find_all('profile')
+    print("Processing page " + str(page_num) + ".")
 
     # Iterate through each profile and insert into DB
     for profile in profiles:
@@ -68,6 +69,6 @@ while limit_num == 300:
             opt_in_path_id = profile.source.get('id')
         else:
             opt_in_path_id = "NULL"
-        insert_profile = "replace into quasars.all_moco_users VALUES ({0}, {1}, {2}, \"{3}\", \"{4}\", {5}, \"{6}\")".format(phone_number, us_phone_number, created_at, source_type, source_name, opt_in_path_id, status)
+        insert_profile = "replace into quasar.all_moco_users VALUES ({0}, {1}, \"{2}\", \"{3}\", \"{4}\", {5}, \"{6}\")".format(phone_number, us_phone_number, created_at, source_type, source_name, opt_in_path_id, status)
         cur.execute(insert_profile)
         db.commit()
