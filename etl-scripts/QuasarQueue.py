@@ -1,5 +1,6 @@
 import pika
 import config
+import json
 
 class BlinkQueue:
     """ This class handles queue tasks for Blink Quasar Customer.io Queue.
@@ -32,3 +33,12 @@ class BlinkQueue:
         except KeyboardInterrupt:
             self.channel.stop_consuming()
         self.connection.close()
+
+    def getOneMessage(self):
+        method_frame, header_frame, body = self.channel.basic_get(config.blink_queue_name)
+        if method_frame:
+            message_response = body.decode()
+            message_data = json.loads(message_response)
+            print(message_data['data']['data']['email_address'])
+        else:
+            print("No messages in queue!")

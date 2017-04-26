@@ -2,4 +2,4 @@ from QuasarQueue import BlinkQueue
 
 testBlink = BlinkQueue()
 
-testBlink.getMessages()
+testBlink.getOneMessage()
