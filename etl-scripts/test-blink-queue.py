@@ -1,5 +1,6 @@
 from QuasarQueue import QuasarQueue
 
-testQuasarQueue = QuasarQueue()
 
-testQuasarQueue.getOneMessage()
+if __name__ == "__main__":
+    testQuasarQueue = QuasarQueue()
+    testQuasarQueue.start()
