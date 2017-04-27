@@ -1,5 +1,5 @@
-from QuasarQueue import BlinkQueue
+from QuasarQueue import QuasarQueue
 
-testBlink = BlinkQueue()
+testQuasarQueue = QuasarQueue()
 
-testBlink.getOneMessage()
+testQuasarQueue.getOneMessage()
